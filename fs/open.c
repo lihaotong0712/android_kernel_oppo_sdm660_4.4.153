@@ -212,6 +212,26 @@ void debug_record_file(char *action, const char *filename, int result)
 }
 
 
+#ifdef CONFIG_KSU_SUSFS
+#include <linux/susfs.h>
+#endif
+
+#ifdef CONFIG_KSU_SUSFS
+#include <linux/susfs.h>
+#endif
+
+#ifdef CONFIG_KSU_SUSFS
+#include <linux/susfs.h>
+#endif
+
+#ifdef CONFIG_KSU_SUSFS
+#include <linux/susfs.h>
+#endif
+
+#ifdef CONFIG_KSU_SUSFS
+#include <linux/susfs.h>
+#endif
+
 int do_truncate2(struct vfsmount *mnt, struct dentry *dentry, loff_t length,
 		unsigned int time_attrs, struct file *filp)
 {
@@ -331,6 +351,18 @@ static long do_sys_truncate(const char __user *pathname, loff_t length)
 	unsigned int lookup_flags = LOOKUP_FOLLOW;
 	struct path path;
 	int error;
+#ifdef CONFIG_KSU_SUSFS_SUS_PATH
+	struct filename* fname;
+	int status;
+
+	fname = getname_safe(pathname);
+	status = susfs_sus_path_by_filename(fname, &error, SYSCALL_FAMILY_ALL_ENOENT);
+	putname_safe(fname);
+
+	if (status) {
+		return error;
+	}
+#endif
 
 	if (length < 0)	/* sorry, but loff_t says... */
 		return -EINVAL;
@@ -367,6 +399,18 @@ static long do_sys_ftruncate(unsigned int fd, loff_t length, int small)
 	struct vfsmount *mnt;
 	struct fd f;
 	int error;
+#ifdef CONFIG_KSU_SUSFS_SUS_PATH
+	struct filename* fname;
+	int status;
+
+	fname = getname_safe(pathname);
+	status = susfs_sus_path_by_filename(fname, &error, SYSCALL_FAMILY_ALL_ENOENT);
+	putname_safe(fname);
+
+	if (status) {
+		return error;
+	}
+#endif
 
 	error = -EINVAL;
 	if (length < 0)
@@ -638,6 +682,20 @@ SYSCALL_DEFINE1(chdir, const char __user *, filename)
 	struct path path;
 	int error;
 	unsigned int lookup_flags = LOOKUP_FOLLOW | LOOKUP_DIRECTORY;
+
+#ifdef CONFIG_KSU_SUSFS_SUS_PATH
+	struct filename* fname;
+	int status;
+
+	fname = getname_safe(filename);
+	status = susfs_sus_path_by_filename(fname, &error, SYSCALL_FAMILY_ALL_ENOENT);
+	putname_safe(fname);
+
+	if (status) {
+		return error;
+	}
+#endif
+
 retry:
 	error = user_path_at(AT_FDCWD, filename, lookup_flags, &path);
 	if (error)
@@ -691,6 +749,20 @@ SYSCALL_DEFINE1(chroot, const char __user *, filename)
 	struct path path;
 	int error;
 	unsigned int lookup_flags = LOOKUP_FOLLOW | LOOKUP_DIRECTORY;
+
+#ifdef CONFIG_KSU_SUSFS_SUS_PATH
+	struct filename* fname;
+	int status;
+
+	fname = getname_safe(filename);
+	status = susfs_sus_path_by_filename(fname, &error, SYSCALL_FAMILY_ALL_ENOENT);
+	putname_safe(fname);
+
+	if (status) {
+		return error;
+	}
+#endif
+
 retry:
 	error = user_path_at(AT_FDCWD, filename, lookup_flags, &path);
 	if (error)
@@ -725,6 +797,18 @@ static int chmod_common(struct path *path, umode_t mode)
 	struct inode *delegated_inode = NULL;
 	struct iattr newattrs;
 	int error;
+#ifdef CONFIG_KSU_SUSFS_SUS_PATH
+	struct filename* fname;
+	int status;
+
+	fname = getname_safe(pathname);
+	status = susfs_sus_path_by_filename(fname, &error, SYSCALL_FAMILY_ALL_ENOENT);
+	putname_safe(fname);
+
+	if (status) {
+		return error;
+	}
+#endif
 
 	error = mnt_want_write(path->mnt);
 	if (error)
@@ -910,6 +994,18 @@ static int do_dentry_open(struct file *f,
 {
 	static const struct file_operations empty_fops = {};
 	int error;
+#ifdef CONFIG_KSU_SUSFS_SUS_PATH
+	struct filename* fname;
+	int status;
+
+	fname = getname_safe(pathname);
+	status = susfs_sus_path_by_filename(fname, &error, SYSCALL_FAMILY_ALL_ENOENT);
+	putname_safe(fname);
+
+	if (status) {
+		return error;
+	}
+#endif
 
 	f->f_mode = OPEN_FMODE(f->f_flags) | FMODE_LSEEK |
 				FMODE_PREAD | FMODE_PWRITE;
